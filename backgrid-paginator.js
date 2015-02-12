@@ -277,6 +277,9 @@
     /** @property */
     goBackFirstOnSort: true,
 
+    /** @property */
+    staticWindowSize: true,
+
     /**
        Initializer.
 
@@ -285,6 +288,7 @@
        @param {boolean} [options.controls]
        @param {boolean} [options.pageHandle=Backgrid.Extension.PageHandle]
        @param {boolean} [options.goBackFirstOnSort=true]
+       @param {boolean} [options.staticWindowSize=true]
     */
     initialize: function (options) {
       var self = this;
@@ -293,7 +297,7 @@
 
       _.extend(self, _.pick(options || {}, "windowSize", "pageHandle",
                             "slideScale", "goBackFirstOnSort",
-                            "renderIndexedPageHandles"));
+                            "staticWindowSize", "renderIndexedPageHandles"));
 
       var col = self.collection;
       self.listenTo(col, "add", self.render);
@@ -360,6 +364,9 @@
                         this.slideThisMuch(firstPage, lastPage, currentPage, windowSize, slideScale));
       }
       var windowEnd = Math.min(lastPage + 1, windowStart + windowSize);
+      if( staticWindowSize && windowEnd > windowSize && (windowEnd - windowSize) < windowSize) {
+        windowStart = windowEnd - windowSize;
+      }
       return [windowStart, windowEnd];
     },
 
